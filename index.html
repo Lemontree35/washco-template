@@ -2,22 +2,281 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template Image Editor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
-  }
-}
-</script>
+  <meta charset="UTF-8" />
+  <title>Washco Template Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: "Times New Roman", Arial, sans-serif;
+      background: #f3f3f3;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    /* مساحة القالب A4 تقريبا بالعرض */
+    #a4-wrapper {
+      width: 1123px;
+      height: 794px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 8px rgba(0,0,0,0.15);
+      padding: 40px;
+      box-sizing: border-box;
+    }
+
+    /* هذا اللي بنصدره كصورة */
+    #template-area {
+      width: 100%;
+      height: 100%;
+      border: 2px solid #000;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* إطار صورة المنتج */
+    .product-frame {
+      flex: 1;
+      border: 3px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .product-frame img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .placeholder-text {
+      color: #777;
+      font-size: 18px;
+    }
+
+    /* جدول الاسم والرقم */
+    .info-row {
+      display: grid;
+      grid-template-columns: 1.1fr 2fr;
+      border: 2px solid #000;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .info-cell {
+      border-right: 2px solid #000;
+      padding: 8px 10px;
+      box-sizing: border-box;
+    }
+
+    .info-cell:last-child {
+      border-right: none;
+    }
+
+    .info-label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .info-value {
+      font-size: 18px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* سطر رقم الصنف */
+    .number-row {
+      display: grid;
+      grid-template-columns: 1.1fr 2fr;
+      border: 2px solid #000;
+      font-size: 18px;
+    }
+
+    .number-left {
+      border-right: 2px solid #000;
+      padding: 8px 10px;
+      box-sizing: border-box;
+    }
+
+    .number-right {
+      padding: 8px 10px;
+      box-sizing: border-box;
+      text-align: left;
+    }
+
+    .controls {
+      width: 1123px;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      box-sizing: border-box;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 20px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .controls-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      padding: 6px 8px;
+      font-size: 14px;
+      min-width: 220px;
+    }
+
+    input[type="file"] {
+      font-size: 13px;
+    }
+
+    button {
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      border: 1px solid #007bff;
+      background: #007bff;
+      color: #fff;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+  </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+  <h1>Washco Product Template (A4)</h1>
+
+  <!-- القالب اللي بنصدره -->
+  <div id="a4-wrapper">
+    <div id="template-area">
+      <div class="product-frame">
+        <img id="productImage" src="" alt="" style="display:none;">
+        <div id="imagePlaceholder" class="placeholder-text">Product image area</div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-cell">
+          <span class="info-label">Item NO :</span>
+          <span id="itemNumberDisplay" class="info-value">77099.13</span>
+        </div>
+        <div class="info-cell">
+          <span class="info-label">Item Name</span>
+          <span id="productNameDisplay" class="info-value">Glass Browne (B-A)</span>
+        </div>
+      </div>
+
+      <div class="number-row">
+        <div class="number-left">
+          <!-- ممكن تستخدم للشعار أو حقل إضافي مستقبلاً -->
+          Logo / Extra
+        </div>
+        <div class="number-right">
+          <!-- فاضي حاليا مثل القالب الأصلي -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- أدوات التحكم (ما تنطلع في الصورة) -->
+  <div class="controls">
+    <div class="controls-group">
+      <label>Product image:</label>
+      <input type="file" accept="image/*" id="imageInput">
+    </div>
+
+    <div class="controls-group">
+      <label>Item Name:</label>
+      <input type="text" id="productNameInput" placeholder="اكتب اسم الصنف">
+    </div>
+
+    <div class="controls-group">
+      <label>Item Number:</label>
+      <input type="text" id="itemNumberInput" placeholder="اكتب رقم الصنف">
+    </div>
+
+    <div class="controls-group">
+      <button id="downloadBtn">Download PNG</button>
+    </div>
+  </div>
+
+  <script>
+    const productImage = document.getElementById('productImage');
+    const imagePlaceholder = document.getElementById('imagePlaceholder');
+    const imageInput = document.getElementById('imageInput');
+    const productNameInput = document.getElementById('productNameInput');
+    const itemNumberInput = document.getElementById('itemNumberInput');
+    const productNameDisplay = document.getElementById('productNameDisplay');
+    const itemNumberDisplay = document.getElementById('itemNumberDisplay');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const templateArea = document.getElementById('template-area');
+
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        productImage.src = reader.result;
+        productImage.style.display = 'block';
+        imagePlaceholder.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    productNameInput.addEventListener('input', () => {
+      productNameDisplay.textContent = productNameInput.value || ' ';
+    });
+
+    itemNumberInput.addEventListener('input', () => {
+      itemNumberDisplay.textContent = itemNumberInput.value || ' ';
+    });
+
+    downloadBtn.addEventListener('click', async () => {
+      downloadBtn.disabled = true;
+      downloadBtn.textContent = 'Generating...';
+
+      await html2canvas(templateArea, {
+        scale: 2,
+        backgroundColor: '#ffffff'
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'washco-template.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }).catch(err => {
+        alert('Error while generating image');
+        console.error(err);
+      });
+
+      downloadBtn.disabled = false;
+      downloadBtn.textContent = 'Download PNG';
+    });
+  </script>
 </body>
 </html>
+

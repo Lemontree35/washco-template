@@ -1,0 +1,5 @@
+{
+  "name": "Template Image Editor",
+  "description": "An application to overlay product images, names, and item numbers onto a template, then export the result as a PNG.",
+  "requestFramePermissions": []
+}

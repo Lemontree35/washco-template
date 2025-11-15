@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,40 +18,42 @@
 
     h1 {
       margin: 0;
-      font-size: 22px;
+      font-size: 20px;
     }
 
-    /* مساحة القالب A4 تقريبا بالعرض */
+    /* مساحة A4 عرضياً تقريبية */
     #a4-wrapper {
       width: 1123px;
       height: 794px;
       background: #ffffff;
       border: 1px solid #ccc;
       box-shadow: 0 0 8px rgba(0,0,0,0.15);
-      padding: 40px;
       box-sizing: border-box;
     }
 
-    /* هذا اللي بنصدره كصورة */
+    /* القالب اللي يتصدر كصورة */
     #template-area {
       width: 100%;
       height: 100%;
-      border: 2px solid #000;
-      padding: 20px;
       box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      position: relative;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      padding: 40px;
     }
 
-    /* إطار صورة المنتج */
+    /* إطار صورة المنتج داخل القالب */
     .product-frame {
-      flex: 1;
-      border: 3px solid #000;
+      position: absolute;
+      /* عدلي القيم هذي لين يطابق مكان الصورة في القالب الأساسي */
+      top: 140px;
+      left: 210px;
+      width: 700px;
+      height: 320px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
     }
 
     .product-frame img {
@@ -63,21 +64,28 @@
 
     .placeholder-text {
       color: #777;
-      font-size: 18px;
+      font-size: 16px;
+      text-align: center;
     }
 
-    /* جدول الاسم والرقم */
+    /* منطقة الاسم والرقم تحت (مكانها ثابت تقريباً) */
     .info-row {
+      position: absolute;
+      /* عدلي هذي القيم لين تطابق الجدول في القالب */
+      bottom: 120px;
+      left: 150px;
+      width: 820px;
+      height: 60px;
       display: grid;
       grid-template-columns: 1.1fr 2fr;
       border: 2px solid #000;
-      margin-bottom: 20px;
-      font-size: 18px;
+      background: rgba(255,255,255,0.9);
+      box-sizing: border-box;
     }
 
     .info-cell {
       border-right: 2px solid #000;
-      padding: 8px 10px;
+      padding: 4px 8px;
       box-sizing: border-box;
     }
 
@@ -88,74 +96,59 @@
     .info-label {
       font-weight: bold;
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 2px;
+      font-size: 14px;
     }
 
     .info-value {
-      font-size: 18px;
+      display: inline-block; /* عشان نقدر نحركه بـ translateY */
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    /* سطر رقم الصنف */
-    .number-row {
-      display: grid;
-      grid-template-columns: 1.1fr 2fr;
-      border: 2px solid #000;
-      font-size: 18px;
-    }
-
-    .number-left {
-      border-right: 2px solid #000;
-      padding: 8px 10px;
-      box-sizing: border-box;
-    }
-
-    .number-right {
-      padding: 8px 10px;
-      box-sizing: border-box;
-      text-align: left;
     }
 
     .controls {
       width: 1123px;
       background: #fff;
       border: 1px solid #ddd;
-      padding: 15px;
+      padding: 12px 15px;
       box-sizing: border-box;
       display: flex;
       flex-wrap: wrap;
       gap: 10px 20px;
       align-items: center;
       justify-content: space-between;
+      font-size: 13px;
     }
 
     .controls-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 6px;
       align-items: center;
     }
 
     label {
-      font-size: 14px;
       font-weight: bold;
     }
 
-    input[type="text"] {
-      padding: 6px 8px;
-      font-size: 14px;
-      min-width: 220px;
-    }
-
-    input[type="file"] {
+    input[type="text"],
+    input[type="number"] {
+      padding: 4px 6px;
       font-size: 13px;
     }
 
+    input[type="file"] {
+      font-size: 12px;
+    }
+
+    input[type="range"] {
+      width: 120px;
+    }
+
     button {
-      padding: 8px 14px;
-      font-size: 14px;
+      padding: 7px 12px;
+      font-size: 13px;
       cursor: pointer;
       border-radius: 4px;
       border: 1px solid #007bff;
@@ -166,20 +159,21 @@
     button:hover {
       background: #0056b3;
     }
-
   </style>
 </head>
 <body>
   <h1>Washco Product Template (A4)</h1>
 
-  <!-- القالب اللي بنصدره -->
+  <!-- القالب اللي راح يتحول إلى PNG -->
   <div id="a4-wrapper">
     <div id="template-area">
+      <!-- صورة المنتج فوق القالب -->
       <div class="product-frame">
         <img id="productImage" src="" alt="" style="display:none;">
         <div id="imagePlaceholder" class="placeholder-text">Product image area</div>
       </div>
 
+      <!-- سطر اسم الصنف ورقم الصنف -->
       <div class="info-row">
         <div class="info-cell">
           <span class="info-label">Item NO :</span>
@@ -190,34 +184,43 @@
           <span id="productNameDisplay" class="info-value">Glass Browne (B-A)</span>
         </div>
       </div>
-
-      <div class="number-row">
-        <div class="number-left">
-          <!-- ممكن تستخدم للشعار أو حقل إضافي مستقبلاً -->
-          Logo / Extra
-        </div>
-        <div class="number-right">
-          <!-- فاضي حاليا مثل القالب الأصلي -->
-        </div>
-      </div>
     </div>
   </div>
 
-  <!-- أدوات التحكم (ما تنطلع في الصورة) -->
+  <!-- أدوات التحكم (ما تطلع في الصورة) -->
   <div class="controls">
     <div class="controls-group">
-      <label>Product image:</label>
+      <label>Template (A4) :</label>
+      <input type="file" accept="image/*" id="templateInput">
+    </div>
+
+    <div class="controls-group">
+      <label>Product image :</label>
       <input type="file" accept="image/*" id="imageInput">
     </div>
 
     <div class="controls-group">
-      <label>Item Name:</label>
-      <input type="text" id="productNameInput" placeholder="اكتب اسم الصنف">
+      <label>Item Name :</label>
+      <input type="text" id="productNameInput" placeholder="اسم الصنف">
     </div>
 
     <div class="controls-group">
-      <label>Item Number:</label>
-      <input type="text" id="itemNumberInput" placeholder="اكتب رقم الصنف">
+      <label>Item Number :</label>
+      <input type="text" id="itemNumberInput" placeholder="رقم الصنف">
+    </div>
+
+    <div class="controls-group">
+      <label>Name font size :</label>
+      <input type="number" id="nameFontSizeInput" value="18" min="8" max="40">
+      <label>Y pos :</label>
+      <input type="range" id="nameOffsetInput" min="-20" max="20" value="0">
+    </div>
+
+    <div class="controls-group">
+      <label>Number font size :</label>
+      <input type="number" id="numberFontSizeInput" value="18" min="8" max="40">
+      <label>Y pos :</label>
+      <input type="range" id="numberOffsetInput" min="-20" max="20" value="0">
     </div>
 
     <div class="controls-group">
@@ -226,16 +229,37 @@
   </div>
 
   <script>
+    const templateArea = document.getElementById('template-area');
+    const templateInput = document.getElementById('templateInput');
+
     const productImage = document.getElementById('productImage');
     const imagePlaceholder = document.getElementById('imagePlaceholder');
     const imageInput = document.getElementById('imageInput');
+
     const productNameInput = document.getElementById('productNameInput');
     const itemNumberInput = document.getElementById('itemNumberInput');
     const productNameDisplay = document.getElementById('productNameDisplay');
     const itemNumberDisplay = document.getElementById('itemNumberDisplay');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const templateArea = document.getElementById('template-area');
 
+    const nameFontSizeInput = document.getElementById('nameFontSizeInput');
+    const numberFontSizeInput = document.getElementById('numberFontSizeInput');
+    const nameOffsetInput = document.getElementById('nameOffsetInput');
+    const numberOffsetInput = document.getElementById('numberOffsetInput');
+
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    // رفع القالب الأساسي كـ خلفية كاملة
+    templateInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        templateArea.style.backgroundImage = `url('${reader.result}')`;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // رفع صورة المنتج
     imageInput.addEventListener('change', (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
@@ -248,6 +272,7 @@
       reader.readAsDataURL(file);
     });
 
+    // تحديث النصوص
     productNameInput.addEventListener('input', () => {
       productNameDisplay.textContent = productNameInput.value || ' ';
     });
@@ -256,6 +281,26 @@
       itemNumberDisplay.textContent = itemNumberInput.value || ' ';
     });
 
+    // التحكم بحجم الخط ومكانه (Y)
+    function updateNameStyle() {
+      productNameDisplay.style.fontSize = (nameFontSizeInput.value || 18) + 'px';
+      productNameDisplay.style.transform = `translateY(${nameOffsetInput.value || 0}px)`;
+    }
+
+    function updateNumberStyle() {
+      itemNumberDisplay.style.fontSize = (numberFontSizeInput.value || 18) + 'px';
+      itemNumberDisplay.style.transform = `translateY(${numberOffsetInput.value || 0}px)`;
+    }
+
+    nameFontSizeInput.addEventListener('input', updateNameStyle);
+    nameOffsetInput.addEventListener('input', updateNameStyle);
+    numberFontSizeInput.addEventListener('input', updateNumberStyle);
+    numberOffsetInput.addEventListener('input', updateNumberStyle);
+
+    updateNameStyle();
+    updateNumberStyle();
+
+    // تصدير PNG
     downloadBtn.addEventListener('click', async () => {
       downloadBtn.disabled = true;
       downloadBtn.textContent = 'Generating...';
@@ -279,4 +324,3 @@
   </script>
 </body>
 </html>
-
